@@ -30,11 +30,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _controller = TextEditingController();
+
+  final myController = TextEditingController();
 
   @override
   void dispose() {
-    _controller.dispose();
+    myController.dispose();
     super.dispose();
   }
 
@@ -50,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              controller: _controller,
+              controller: myController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Enter your text",
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => secondScreen(
-                        text: _controller.text,
+                        text: myController.text
                       ),
                   ),
               );
