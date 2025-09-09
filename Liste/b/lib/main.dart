@@ -55,28 +55,37 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: ListView.builder(
-          itemCount: listeFibonnaci.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.blue),
-              ),
-              child: ListTile(
-                title: Center(
-                  child: Text(
-                    listeFibonnaci[index].toString(),
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
+        child : ListView(
+          children : listeFibonnaci.map((item){
+            return Card(
+              child: Padding(padding: EdgeInsets.all(8.0),
+              child: Text(item.toString()),
               ),
             );
-          },
-        ),
+        }).toList()
+        )
+      //   child: ListView.builder(
+      //     itemCount: listeFibonnaci.length,
+      //     itemBuilder: (context, index) {
+      //       return Container(
+      //         margin: const EdgeInsets.all(10),
+      //         padding: const EdgeInsets.all(10),
+      //         decoration: BoxDecoration(
+      //           color: Colors.blue,
+      //           borderRadius: BorderRadius.circular(10),
+      //           border: Border.all(color: Colors.blue),
+      //         ),
+      //         child: ListTile(
+      //           title: Center(
+      //             child: Text(
+      //               listeFibonnaci[index].toString(),
+      //               style: const TextStyle(color: Colors.white, fontSize: 18),
+      //             ),
+      //           ),
+      //         ),
+      //       );
+      //     },
+      //   ),
       ),
     );
   }
