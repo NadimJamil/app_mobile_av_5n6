@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
@@ -30,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  TextEditingController urlImageId = TextEditingController();
   final Dio dio = Dio();
   final ImagePicker picker = ImagePicker();
 
@@ -54,53 +55,105 @@ class _MyHomePageState extends State<MyHomePage> {
         });
 
         Response response = await dio.post(
-            "http://10.0.2.2:8080/exos/file",
-            data: formData
+          "http://10.0.2.2:8080/exos/file",
+          data: formData,
         );
 
         if (response.statusCode == 200) {
           String id = response.data.toString();
-          String imageUrl = "http://10.0.2.2:8080/exos/file/$id?width=200";
+          String imageUrl = "http://10.0.2.2:8080/exos/file/$id?width=300";
           imageUrls.add(imageUrl);
-          setState(() {
-
-          });
+          setState(() {});
         }
       }
     } on Exception catch (e) {
       print("Erreur $e");
     }
   }
+
+  void afficherImageParId() async {
+    final id = urlImageId.text.trim();
+    if (id.isEmpty) return;
+
+    final url = "http://10.0.2.2:8080/exos/file/$id?width=300";
+    setState(() {
+      imageUrls.add(url);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .inversePrimary,
         title: Text(widget.title),
       ),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () => selectionnerImage(),
-              child: Text("Selectionner image"),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          ElevatedButton(
+            onPressed: () => selectionnerImage(),
+            child: Text("Selectionner image"),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            flex: 1,
+            child: imageUrls.isEmpty
+                ? const Center(child: Text("Aucune image à afficher"))
+                : ListView.builder(
+              itemCount: imageUrls.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.network(imageUrls[index]),
+                );
+              },
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: imageUrls.isEmpty
-                  ? const Center(child: Text("Aucune image à afficher"))
-                  : ListView.builder(
-                itemCount: imageUrls.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.network(imageUrls[index]),
-                  );
-                },
+          ),
+
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    controller: urlImageId,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: "Enter id",
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      afficherImageParId();
+                    },
+                    child: const Text("Afficher photo"),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: imageUrls.isEmpty
+                        ? const Center(child: Text("Aucune image à afficher"))
+                        : ListView.builder(
+                      itemCount: imageUrls.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network(imageUrls[index]),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
-}
+  }
